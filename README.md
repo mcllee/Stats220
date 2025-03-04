@@ -4,7 +4,7 @@ This is my repo for STATS 220.
 
 A little about me:
 
-- I am undertaking a degree in Science
+- I am undertaking a degree in Science (BSc IT).
 - I am taking STATS 220 because I enjoy statistics and I think this course would be helpful for me in the future.
 - I am interested in learning about R and more functions.
 
