@@ -1,0 +1,108 @@
+---
+title: My dynamic report
+output: html_fragment
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+
+```
+
+```{css, echo = FALSE}
+body {
+  background-color:#FFE6EE;/ *changing the background color*/
+  color: #AA336A;/*changing the color of text*/
+  font-family: "Times New Roman", serif;/
+}
+
+h1 {
+  font-size: 40px;
+  font-weight: bold;
+  color: #AA336A;
+  font-family: "Times New Roman", sans-serif;
+}
+
+h2 {
+  font-size:30px;
+  font-weight:bold;
+  font-family: "Montserrat", serif;
+}
+```
+
+## What are the most common targeted ads for University of Auckland students?
+
+This dynamic report will analyze the types of advertisements most frequently aimed at University of Auckland students, focusing on the platforms and topics that dominate their online experiences. By analyzing data on the social media platforms where these ads appear, the subjects they cover, and how often students encounter them each day, the survey aims to uncover patterns in digital marketing strategies. Firstly, the report will identify which platforms, such as Instagram, Facebook, and TikTok, are most commonly used for delivering these ads. It will also explore the prevalent ad topics, ranging from academic services to shopping advertisements, and determine whether certain themes have higher ad frequency and why it may be. This analysis seeks to reveal how advertisers tailor their campaigns to capture the attention of the student demographic.
+
+```{r}
+#loading package
+library(tidyverse)
+sheet_url <- "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPk_pqFouL-R7jW0meclUNj3Eh69VrSJE_rYhZlCRsWmhMrSMmHN6n-C1_MatMoii48Z59Q-KWpWbM/pub?output=csv"
+#reading data and naming the data
+logged_data <- read.csv(sheet_url)%>%
+  #naming the variables
+  rename(time_stamp = 1,
+         media_platform = 2,
+         ad_topic = 3,
+         ad_frequency = 4)
+
+latest_data <- logged_data
+
+```
+
+## Popular Social Media Platforms
+This chart examines the social media platforms where students at the University of Auckland see the highest number of advertisements.
+
+```{r}
+ggplot(data = latest_data)+
+  geom_bar(aes(x = media_platform), fill = "#AA336A")+
+  labs(title = "Most Common Social Media Platform", 
+       x = "Media Platform",
+       y = "Number of Observations")
+  
+observations <- length(latest_data$ad_topic)
+
+platform_count <- table(latest_data$media_platform)
+#most popular platform
+max_platform <- names(which.max(platform_count))
+
+paste("Among the University of Auckland students surveyed,", max_platform, "came out to be the most frequently used social media platform where students at the University of Auckland see the highest number of advertisements, based on", observations,"recorded observations collected over a 7-day period.")
+
+```
+
+## Popular Adverisement Topics Targeted to University Students
+This chart shows the most frequently targeted advertisement topics that the University of Auckland students see the most on social media platforms.
+
+```{r fig.width = 12, fig.height = 6}
+
+latest_data %>%
+  ggplot() +
+  geom_bar(aes(x = ad_topic, fill = ad_topic))+ #giving the bars color
+  labs(title = "Most Common Ad Topics",
+       subtitle = "What is the most common ad topic targeted at university students?",
+       x = "Ad Topic",
+       y = "Number of Observations")+
+  #naming the y-axis and x-axis on the graph
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+#making the topics sit in an angle so that it's neater and not overlapping
+
+#most popular topic
+max_topic_count <- table(latest_data$ad_topic)
+max_topic <- names(which.max(max_topic_count))
+
+#least popular topic
+min_topic_count <- table(latest_data$ad_topic)
+min_topic <- names(which.min(min_topic_count))
+observations <- length(latest_data$ad_topic)
+
+paste("From the advertisement topics observed,", max_topic,"was the most popular advertisement topics the University of Auckland students see the most while", min_topic, "was the least popular out of the", observations, "observations that were recorded during a 7 day period.")
+
+```
+
+## Average Ad Frequency
+
+```{r}
+#average ad frequency
+avg_frequency <- round(mean(latest_data$ad_frequency),1)
+paste("On average, University of Auckland students encountered these advertisements approximately",avg_frequency,"times daily per platform.")
+
+```
